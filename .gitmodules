@@ -1,0 +1,3 @@
+[submodule "plugins/marlonrichert/zsh-snap"]
+	path = plugins/marlonrichert/zsh-snap
+	url = https://github.com/marlonrichert/zsh-snap.git
