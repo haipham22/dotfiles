@@ -18,4 +18,4 @@ znap source zsh-users/zsh-syntax-highlighting
 export STARSHIP_CONFIG=~/dotfiles/shell/framework/starship.toml
 eval "$(starship init zsh)"
 
-alias now='date +"%T"'
+# alias now='date +"%T"'
