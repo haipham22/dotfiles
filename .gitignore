@@ -1,5 +1,5 @@
 # source code
-plugins
+plugins/
 
 # Ide, text edtior
 .vscode
