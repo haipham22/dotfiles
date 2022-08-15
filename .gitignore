@@ -1,1 +1,7 @@
+# source code
+
 plugins
+
+# Ide, text edtior
+.vscode
+.idea
