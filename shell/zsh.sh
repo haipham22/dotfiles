@@ -5,11 +5,11 @@ if [[ "$unamestr" == 'Darkwin' ]]; then
 fi
 
 ZNAP_DIR=$HOME/dotfiles/plugins/znap
+NAME_DIR=$HOME/dotfiles
 
 if [ ! -f "$ZNAP_DIR/znap.zsh" ]; then
     git clone --depth 1 -- \
         https://github.com/marlonrichert/zsh-snap.git $ZNAP_DIR
-
 fi
 
 
@@ -19,3 +19,5 @@ znap source zsh-users/zsh-syntax-highlighting
 
 export STARSHIP_CONFIG=~/dotfiles/shell/framework/starship.toml
 eval "$(starship init zsh)"
+
+source "$HOME/dotfiles/shell/alias.sh"
