@@ -4,14 +4,17 @@ if [[ "$unamestr" == 'Darkwin' ]]; then
     platform = 'macos'
 fi
 
-ZNAP_DIR=$HOME/dotfiles/plugins/znap
-NAME_DIR=$HOME/dotfiles
+
+DOTFILES_DIR=$HOME/dotfiles
+
+ZNAP_DIR=$DOTFILES_DIR/plugins/znap
 
 if [ ! -f "$ZNAP_DIR/znap.zsh" ]; then
     git clone --depth 1 -- \
         https://github.com/marlonrichert/zsh-snap.git $ZNAP_DIR
 fi
 
+source "$DOTFILES_DIR/shell/inc/alias.sh"
 
 source "$ZNAP_DIR/znap.zsh"
 znap source marlonrichert/zsh-autocomplete
