@@ -18,3 +18,9 @@ alias gcma="git commit --amend"
 alias gco="git checkout"
 alias gph="git push"
 alias gcl="git clone"
+
+# command
+alias composer="docker run --rm --interactive --tty \
+  --volume $PWD:/app \
+  --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp \
+  composer"
