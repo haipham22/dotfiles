@@ -26,5 +26,7 @@ alias composer="docker run --rm --interactive --tty \
   --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp \
   composer"
 
+alias laravel="composer create-project laravel/laravel --prefer-dist"
+
 alias ng="npx -p @angular/cli@latest ng"
 alias cdktf="npx -p cdktf-cli@latest cdktf"
