@@ -26,5 +26,3 @@ znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
 
 export STARSHIP_CONFIG=~/dotfiles/shell/framework/starship.toml
 eval "$(starship init zsh)"
-
-source "$HOME/dotfiles/shell/alias.sh"

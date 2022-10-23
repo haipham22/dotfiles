@@ -21,10 +21,12 @@ alias gph="git push"
 alias gcl="git clone"
 
 # command
-alias composer="docker run --rm --interactive --tty \
-  --volume $PWD:/app \
-  --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp \
-  composer"
+alias laravel-init='docker run --rm \
+    --pull=always \
+    -v "$(pwd)":/opt \
+    -w /opt \
+    laravelsail/php74-composer:latest \
+    bash -c "laravel new --prefer-dist example-app"'
 
 alias laravel="composer create-project laravel/laravel --prefer-dist"
 
