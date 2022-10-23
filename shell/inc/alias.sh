@@ -9,6 +9,7 @@ alias mkdir="mkdir -p"
 
 
 # git command
+alias gad="git add"
 alias gpl="git pull"
 alias gplb="git pull --rebase"
 alias gf="git diff"
@@ -24,3 +25,6 @@ alias composer="docker run --rm --interactive --tty \
   --volume $PWD:/app \
   --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp \
   composer"
+
+alias ng="npx -p @angular/cli@latest ng"
+alias cdktf="npx -p cdktf-cli@latest cdktf"
