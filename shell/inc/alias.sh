@@ -17,6 +17,7 @@ alias gst="git status"
 alias gcm="git commit"
 alias gcma="git commit --amend"
 alias gco="git checkout"
+alias gcob="git checkout -b"
 alias gph="git push"
 alias gcl="git clone"
 
@@ -25,8 +26,8 @@ alias laravel-init='docker run --rm \
     --pull=always \
     -v "$(pwd)":/opt \
     -w /opt \
-    laravelsail/php74-composer:latest \
-    bash -c "laravel new --prefer-dist example-app"'
+    laravelsail/php81-composer:latest \
+    bash -c "laravel new example-app"'
 
 alias laravel="composer create-project laravel/laravel --prefer-dist"
 
