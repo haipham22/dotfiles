@@ -1,4 +1,4 @@
-command_timeout = 1000
+add_newline = true
 
 [git_branch]
 # symbol = "🌱 "
@@ -11,4 +11,5 @@ truncation_length = 8
 truncation_symbol = "…/"
 truncate_to_repo = false
 
-
+[nodejs]
+format = "via [🤖 $version](bold green) "
