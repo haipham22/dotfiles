@@ -21,6 +21,12 @@ alias gcob="git checkout -b"
 alias gph="git push"
 alias gcl="git clone"
 
+
+# docker compose alias
+alias dcp="docker compose"
+alias dcpe="docker compose exec"
+
+
 # command
 alias laravel-init='docker run --rm \
     --pull=always \
