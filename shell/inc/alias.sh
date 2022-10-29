@@ -25,6 +25,7 @@ alias gcl="git clone"
 # docker compose alias
 alias dcp="docker compose"
 alias dcpe="docker compose exec"
+alias dcpd="docker compose down"
 
 
 # command
