@@ -2,4 +2,4 @@ init-git:
 	git submodule update --recursive --init
 
 init:
-	make init
+	echo "source $$(pwd)/shell/zsh.sh" >> ~/.zshrc
