@@ -24,9 +24,11 @@ alias gcl="git clone"
 
 # docker compose alias
 alias dcp="docker compose"
+alias dcpu="docker compose up"
+alias dcpud="docker compose up -d"
 alias dcpe="docker compose exec"
 alias dcpd="docker compose down"
-
+alias dcpdv="docker compose down -v"
 
 # command
 alias laravel-init='docker run --rm \

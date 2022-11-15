@@ -15,6 +15,7 @@ if [ ! -f "$ZNAP_DIR/znap.zsh" ]; then
 fi
 
 source "$DOTFILES_DIR/shell/inc/alias.sh"
+source "$DOTFILES_DIR/shell/inc/functions.sh"
 
 source "$ZNAP_DIR/znap.zsh"
 znap source marlonrichert/zsh-autocomplete
