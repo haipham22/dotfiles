@@ -6,7 +6,7 @@ alias pn=pnpm
 alias rm='rm -rf'
 alias ll='ls -l'
 alias mkdir="mkdir -p"
-
+alias cls="clear"
 
 # git command
 alias gad="git add"
