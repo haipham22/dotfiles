@@ -38,7 +38,6 @@ alias laravel-init='docker run --rm \
     laravelsail/php81-composer:latest \
     bash -c "laravel new example-app"'
 
-alias laravel="composer create-project laravel/laravel --prefer-dist"
-
 alias ng="npx -p @angular/cli@latest ng"
 alias cdktf="npx -p cdktf-cli@latest cdktf"
+alias ncu="npx -p npm-check-updates ncu"
