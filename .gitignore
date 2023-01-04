@@ -1,9 +1,20 @@
-# source code
+# Node
+npm-debug.log
 
-plugins
-
-# Ide, text edtior
-.vscode
-.idea
-
+# Mac
 .DS_Store
+
+# Windows
+Thumbs.db
+
+# WebStorm
+.idea/
+
+# vi
+*~
+
+# General
+log/
+*.log
+
+# etc...
