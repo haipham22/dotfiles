@@ -16,5 +16,6 @@ Thumbs.db
 # General
 log/
 *.log
+vendor
 
 # etc...
