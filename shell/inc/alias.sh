@@ -39,8 +39,10 @@ alias laravel-init='docker run --rm \
     bash -c "laravel new example-app"'
 
 alias laravel="composer create-project laravel/laravel --prefer-dist"
-alias ng="pnpm --package=@angular/cli@latest"
-alias nx="pnpm --package=nx"
-alias cdktf="pnpm --package=cdktf-cli@latest"
-alias ncu="pnpm --package=npm-check-updates"
-alias vue="pnpm --package=@vue/cli dlx vue"
+alias ng="npx @angular/cli@latest"
+alias nx="npx nx"
+alias cdktf="npx cdktf-cli@latest"
+alias ncu="npx npm-check-updates"
+alias vue="npx @vue/cli"
+alias pm2="npx pm2"
+
