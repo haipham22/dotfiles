@@ -17,10 +17,10 @@ fi
 source "$DOTFILES_DIR/shell/inc/alias.sh"
 source "$DOTFILES_DIR/shell/inc/functions.sh"
 
-# `znap prompt` makes your prompt visible in just 15-40ms!
+source "$ZNAP_DIR/znap.zsh"
+
 znap prompt sindresorhus/pure
 
-source "$ZNAP_DIR/znap.zsh"
 znap source marlonrichert/zsh-autocomplete
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
