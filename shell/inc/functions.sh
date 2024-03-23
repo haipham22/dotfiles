@@ -6,3 +6,7 @@ function git_clean_branch() {
 function git_empty_commit() {
   git commit --allow-empty -m "Empty-Commit" && git push
 }
+
+function pn_version() {
+  pnpm env use --global $1
+}
