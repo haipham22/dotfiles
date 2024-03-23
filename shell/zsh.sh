@@ -5,9 +5,9 @@ if [[ "$unamestr" == 'Darkwin' ]]; then
 fi
 
 
-DOTFILES_DIR=$HOME/dotfiles
+DOTFILES_DIR=$HOME/Workspace/dotfiles
 
-ZNAP_DIR=$HOME/.znap-plugins
+ZNAP_DIR=$HOME/Workspace/znap-plugins
 
 if [ ! -f "$ZNAP_DIR/znap/znap.zsh" ]; then
     git clone --depth 1 -- \
