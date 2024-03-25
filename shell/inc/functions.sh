@@ -7,6 +7,14 @@ function git_empty_commit() {
   git commit --allow-empty -m "Empty-Commit" && git push
 }
 
-function pn_version() {
+function node_ver() {
   pnpm env use --global $1
+}
+
+function node_ls() {
+  if [ $# -eq 0 ]; then
+      pnpm env list --remote
+  else 
+      pnpm env list --remote | grep "$1" 
+  fi
 }
