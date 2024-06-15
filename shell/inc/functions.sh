@@ -18,3 +18,7 @@ function node_ls() {
       pnpm env list --remote | grep "$1" 
   fi
 }
+
+function clean_ds() {
+  find . -name ".DS_Store" -print -delete
+}
