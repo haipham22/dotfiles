@@ -19,11 +19,10 @@ function node_ls() {
   fi
 }
 
-<<<<<<< HEAD
 function clean_ds() {
   find . -name ".DS_Store" -print -delete
-=======
+}
+
 function short_commit() {
   git rev-parse --short $1
->>>>>>> 80654e8 (add short commit functions)
 }
