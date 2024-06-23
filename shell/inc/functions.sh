@@ -22,3 +22,7 @@ function node_ls() {
 function clean_ds() {
   find . -name ".DS_Store" -print -delete
 }
+
+function short_commit() {
+  git rev-parse --short $1
+}
