@@ -29,8 +29,10 @@ znap source zsh-users/zsh-completions
 znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
 
-# `znap eval` caches and runs any kind of command output for you.
-znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
+if [[ $platform == 'macos' ]]; then
+    # `znap eval` caches and runs any kind of command output for you.
+    znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
+fi
 
 export STARSHIP_CONFIG=$DOTFILES_DIR/shell/framework/starship.toml
 eval "$(starship init zsh)"
