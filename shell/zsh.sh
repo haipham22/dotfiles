@@ -4,10 +4,11 @@ if [[ "$unamestr" == 'Darkwin' ]]; then
     platform = 'macos'
 fi
 
+WOKRSPACE=$HOME/Workspaces
 
-DOTFILES_DIR=$HOME/Workspace/dotfiles
+DOTFILES_DIR=$WOKRSPACE/dotfiles
 
-ZNAP_DIR=$HOME/Workspace/znap-plugins
+ZNAP_DIR=$WOKRSPACE/znap-plugins
 
 if [ ! -f "$ZNAP_DIR/znap/znap.zsh" ]; then
     git clone --depth 1 -- \
