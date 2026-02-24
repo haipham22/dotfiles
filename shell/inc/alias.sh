@@ -30,18 +30,6 @@ alias dcpe="docker compose exec"
 alias dcpd="docker compose down"
 alias dcpdv="docker compose down -v"
 
-# command
-alias laravel-init='docker run --rm \
-    --pull=always \
-    -v "$(pwd)":/opt \
-    -w /opt \
-    laravelsail/php81-composer:latest \
-    bash -c "laravel new example-app"'
-
-alias laravel="composer create-project laravel/laravel --prefer-dist"
-alias ng="npx @angular/cli@latest"
-alias nx="npx nx"
-alias cdktf="npx cdktf-cli@latest"
-alias ncu="npx npm-check-updates"
-alias vue="npx @vue/cli"
-alias pm2="npx pm2"
+# claude
+alias claudek="claude --dangerously-skip-permissions"
+alias claudekm="claude --dangerously-skip-permissions --teammate-mode=tmux"
