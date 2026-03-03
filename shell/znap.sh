@@ -17,8 +17,6 @@ export ZSH_DISABLE_COMPFIX=true
         
 # fi
 
-source "$DOTFILES_DIR/shell/inc/alias.sh"
-source "$DOTFILES_DIR/shell/inc/functions.sh"
 
 source "$ZNAP_DIR/znap/znap.zsh"
 
