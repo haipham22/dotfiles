@@ -11,6 +11,9 @@ DOTFILES_DIR=$WOKRSPACE/dotfiles
 export STARSHIP_CONFIG=$DOTFILES_DIR/shell/framework/starship.toml
 eval "$(starship init zsh)"
 
+# zoxide
+eval "$(zoxide init zsh)"
+
 source "$DOTFILES_DIR/shell/inc/alias.sh"
 source "$DOTFILES_DIR/shell/inc/functions.sh"
 
