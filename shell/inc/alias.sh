@@ -33,3 +33,5 @@ alias dcpdv="docker compose down -v"
 # claude
 alias claudek="claude --dangerously-skip-permissions"
 alias claudekm="claude --dangerously-skip-permissions --teammate-mode=tmux"
+
+alias cd="z"
