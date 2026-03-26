@@ -18,3 +18,4 @@ fi
 source ${ZIM_HOME}/init.zsh
 
 # zmodule sindresorhus/pure --source async.zsh
+# zmodule romkatv/powerlevel10k --use degit
