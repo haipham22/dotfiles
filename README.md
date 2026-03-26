@@ -18,11 +18,8 @@ Personal configuration files for zsh, git, and development tools.
 git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/Workspaces/dotfiles
 cd ~/Workspaces/dotfiles
 
-# Initialize shell configuration
+# Initialize everything (zsh, gitignore, fix completion issues)
 make init
-
-# Initialize git global excludes
-make init-gitignore
 
 # Restart your shell
 exec zsh
@@ -157,6 +154,27 @@ zimfw upgrade
 rm -f ~/.zcompdump*
 exec zsh
 ```
+
+### Fix Completion Issues
+
+If you see completion warnings, use the built-in fix function:
+
+```bash
+# Via function (diagnoses + fixes)
+fix_zim_completion
+
+# Via alias
+fix-zim
+
+# Via makefile
+make fix-zim
+```
+
+This will:
+- Check load order of zimfw, zoxide, starship
+- Detect duplicate initializations
+- Clean .zcompdump cache
+- Reinstall zimfw modules
 
 ## Troubleshooting
 

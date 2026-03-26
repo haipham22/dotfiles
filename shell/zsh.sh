@@ -11,7 +11,11 @@ DOTFILES_DIR=$WOKRSPACE/dotfiles
 export STARSHIP_CONFIG=$DOTFILES_DIR/shell/framework/starship.toml
 
 # Initialize zimfw FIRST (before any completion setup)
-source "$DOTFILES_DIR/shell/zim.sh"
+# Guard against double-loading in same session
+if [[ -z "$ZIMFW_LOADED" ]]; then
+  source "$DOTFILES_DIR/shell/zim.sh"
+  export ZIMFW_LOADED=1
+fi
 
 # zoxide after zimfw
 eval "$(zoxide init zsh)"
