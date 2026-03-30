@@ -75,3 +75,10 @@ function fix_zim_completion() {
 
 # Alias for quick fix
 alias fix-zim='fix_zim_completion'
+
+# Install .deb packages from URL (Linux only)
+if [[ "$(uname)" == "Linux" ]]; then
+  function install-deb() {
+    "$DOTFILES_DIR/shell/inc/install-deb.sh" "$@"
+  }
+fi
