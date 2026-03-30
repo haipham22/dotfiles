@@ -73,6 +73,79 @@ function fix_zim_completion() {
   echo "✅ Fix complete. Restart your shell: exec zsh"
 }
 
+# Kill process(es) listening on specific port(s)
+# Usage: killport 3001              # Kill single port
+#        killport 3000-3005        # Kill port range
+#        killport 3000 8080 9000   # Kill multiple ports
+function killport() {
+  if [[ $# -eq 0 ]]; then
+    echo "Usage: killport <port> or <start-end> or <port1> <port2> ..."
+    echo "Example: killport 3001"
+    echo "         killport 3000-3005"
+    echo "         killport 3000 8080 9000"
+    return 1
+  fi
+
+  local ports_to_kill=()
+
+  # Parse arguments: handle single ports and ranges
+  for arg in "$@"; do
+    if [[ "$arg" =~ ^([0-9]+)-([0-9]+)$ ]]; then
+      # Port range (e.g., 3000-3005)
+      local start="${match[1]}"
+      local end="${match[2]}"
+
+      if [[ $start -gt $end ]]; then
+        echo "❌ Invalid range: $arg (start > end)"
+        continue
+      fi
+
+      # Generate port list from range
+      for ((port = start; port <= end; port++)); do
+        ports_to_kill+=("$port")
+      done
+    elif [[ "$arg" =~ ^[0-9]+$ ]]; then
+      # Single port
+      ports_to_kill+=("$arg")
+    else
+      echo "⚠️  Skipping invalid port: $arg"
+    fi
+  done
+
+  if [[ ${#ports_to_kill[@]} -eq 0 ]]; then
+    echo "❌ No valid ports specified"
+    return 1
+  fi
+
+  local killed_count=0
+  local not_found_count=0
+
+  # Kill processes on each port
+  for port in "${ports_to_kill[@]}"; do
+    # Use lsof to find process listening on the port (macOS compatible)
+    local pid=$(lsof -ti ":$port" 2>/dev/null)
+
+    if [[ -n "$pid" ]]; then
+      # Get command name for better feedback
+      local cmd=$(ps -p "$pid" -o comm= 2>/dev/null || echo "unknown")
+      echo "🔪 Killing $cmd (PID: $pid) on port $port"
+      kill -9 "$pid" 2>/dev/null && ((killed_count++))
+    else
+      echo "⚠️  No process found on port $port"
+      ((not_found_count++))
+    fi
+  done
+
+  # Summary
+  echo
+  if [[ $killed_count -gt 0 ]]; then
+    echo "✅ Killed $killed_count process(es)"
+  fi
+  if [[ $not_found_count -gt 0 ]]; then
+    echo "ℹ️  $not_found_count port(s) had no process"
+  fi
+}
+
 # Alias for quick fix
 alias fix-zim='fix_zim_completion'
 
