@@ -2,14 +2,14 @@ init-git:
 	git submodule update --recursive --init
 
 init:
-	make init-zsh
-	make init-gitignore
-	make fix-zim
+	make init-zsh init-zim init-gitignore fix-zim
 
 
 init-zsh:
 	echo "source $$(pwd)/shell/zsh.sh" >> ~/.zshrc
 
+init-zim:
+	echo "source $$(pwd)/shell/zim.sh" >> ~/.zshrc
 
 init-gitignore:
 	git config --global core.excludesfile "$$(pwd)/git/.gitignore"

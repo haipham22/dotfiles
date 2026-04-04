@@ -19,3 +19,6 @@ log/
 
 # etc...
 /plugins/
+
+# Ignore .zwc files
+*.zwc

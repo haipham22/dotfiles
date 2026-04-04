@@ -2,4 +2,26 @@
 .idea
 vendor
 *.iml
-pnpm-lock.yaml
+
+# Ignore MacOS system files
+.DS_Store
+
+# Ignore node modules
+node_modules
+
+# Ignore log files
+*.log
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+# Ignore virtual environment
+venv/
+
+# Ignore Zim files
+.zim/
+
+# Ignore Typescript build files
+dist/
+*.d.ts
+*.d.ts.map
