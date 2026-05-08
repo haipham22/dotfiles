@@ -22,3 +22,6 @@ fix-zim:
 		zimfw install; \
 	fi
 	@echo "✅ Done. Run 'exec zsh' to restart shell"
+
+init-tmux:
+	ln -s "$$(pwd)/tmux.conf" ~/.tmux.conf

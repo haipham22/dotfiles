@@ -13,3 +13,16 @@ truncate_to_repo = false
 
 [nodejs]
 format = "via [🤖 $version](bold green) "
+
+# always show machine hostname
+[hostname]
+ssh_only = false
+format = '[$ssh_symbol](bold blue)[$hostname](bold blue)'
+trim_at = '.companyname.com'
+disabled = false
+
+# always show machine IP
+[localip]
+ssh_only = false
+format = '@[$localipv4](bold blue) '
+disabled = false

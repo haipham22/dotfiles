@@ -23,10 +23,9 @@ if [ -z "$URL" ]; then
   exit 1
 fi
 
-# Validate URL contains .deb (before query params or fragment)
+# Warn if URL doesn't contain .deb (might be redirect)
 if [[ ! "$URL" =~ \.deb(\?|#|$) ]]; then
-  echo "❌ Error: URL must contain .deb file"
-  exit 2
+  echo "⚠️  Warning: URL doesn't contain .deb (might be a redirect)"
 fi
 
 # Check for wget or curl
@@ -57,6 +56,14 @@ else
 fi
 
 echo "✅ Downloaded to: $DEB_FILE"
+
+# Validate downloaded file is a Debian package
+if ! file "$DEB_FILE" | grep -q "Debian binary package"; then
+  echo "❌ Error: Downloaded file is not a valid .deb package"
+  echo "File type: $(file "$DEB_FILE")"
+  rm -rf "$TEMP_DIR"
+  exit 6
+fi
 
 # Install with apt-get for dependency resolution
 if [ "$DRY_RUN" = "true" ]; then
