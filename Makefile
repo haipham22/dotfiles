@@ -2,7 +2,7 @@ init-git:
 	git submodule update --recursive --init
 
 init:
-	make init-zsh init-zim init-gitignore fix-zim
+	make init-zsh init-zim init-gitignore init-tmux
 
 
 init-zsh:
