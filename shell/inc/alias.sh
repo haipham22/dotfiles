@@ -37,6 +37,10 @@ alias cccm="claude --dangerously-skip-permissions --teammate-mode=tmux"
 # dotfiles maintenance
 alias fix-zim="fix_zim_completion"
 
+# clipboard
+alias "c=xclip"
+alias "v=xclip -o"
+
 if [[ "$(uname)" == 'Darwin' ]]; then
     alias timeout=gtimeout
 fi
