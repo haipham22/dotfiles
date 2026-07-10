@@ -1,8 +1,7 @@
 
 
-WORKSPACE=$HOME/Workspaces
-
-DOTFILES_DIR=$WORKSPACE/dotfiles
+# Resolve dotfiles root from this script's own path (shell/zsh.sh -> root)
+DOTFILES_DIR=${0:A:h:h}
 
 export STARSHIP_CONFIG=$DOTFILES_DIR/shell/framework/starship.toml
 
