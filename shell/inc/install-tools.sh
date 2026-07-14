@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Dev tools helper: installs zoxide, starship, tmux, mise if missing. Idempotent.
-# Called by setup.sh (which handles zsh/curl/make base deps + chsh first).
+# Dev tools helper: installs zoxide, starship, mise if missing. Idempotent.
+# User-space only (~/.local/bin on Linux) -> survives SteamOS A/B updates.
+# System packages (zsh/tmux/git/make/curl) are handled by `./setup.sh base`.
 #   macOS : Homebrew
-#   Linux : apt (tmux), official install scripts (zoxide/mise -> ~/.local/bin, starship -> /usr/local/bin)
+#   Linux : official install scripts (zoxide/mise -> ~/.local/bin, starship -> /usr/local/bin)
 set -euo pipefail
 
 have() { command -v "$1" >/dev/null 2>&1; }
@@ -12,16 +13,15 @@ install_mac() {
     echo "❌ Homebrew not found. Install it first: https://brew.sh"
     exit 1
   fi
-  have zoxide  || brew install zoxide
+  have zoxide   || brew install zoxide
   have starship || brew install starship
-  have tmux     || brew install tmux
   have mise     || brew install mise
 }
 
 install_linux() {
   if ! have curl; then
-    echo "📦 Installing curl + ca-certificates (required for downloads)..."
-    sudo apt-get update && sudo apt-get install -y curl ca-certificates
+    echo "❌ curl missing. Run './setup.sh base' first."
+    exit 1
   fi
   if ! have zoxide; then
     echo "📦 Installing zoxide..."
@@ -31,7 +31,6 @@ install_linux() {
     echo "📦 Installing starship..."
     curl -sS https://starship.rs/install.sh | sh -s -- -y
   fi
-  have tmux || { echo "📦 Installing tmux..."; sudo apt-get install -y tmux; }
   have mise || { echo "📦 Installing mise..."; curl -sSfL https://mise.run | sh; }
 }
 
@@ -51,6 +50,5 @@ check() {
 
 check zoxide
 check starship
-check tmux
 check mise
 echo "ℹ️  Run 'exec zsh' to activate."

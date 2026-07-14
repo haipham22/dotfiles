@@ -8,43 +8,80 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 have() { command -v "$1" >/dev/null 2>&1; }
+is_steamos() { [[ -r /etc/os-release ]] && grep -qi 'steamos' /etc/os-release; }
 
 OS="$(uname -s)"
 
-# 1. zsh + base deps (must come before everything else).
+# 1. zsh + tmux + base deps (must come before everything else).
+#    On SteamOS, /usr is wiped on every OS update -> re-run `./setup.sh base` after each update.
 ensure_base() {
   case "$OS" in
     Darwin)
       have brew || { echo "❌ Homebrew not found: https://brew.sh"; exit 1; }
       have zsh  || brew install zsh
+      have tmux || brew install tmux
       ;;
     Linux)
-      if ! have zsh || ! have curl || ! have make || ! have git; then
-        sudo apt-get update
-        have zsh  || sudo apt-get install -y zsh
-        have curl || sudo apt-get install -y curl ca-certificates
-        have make || sudo apt-get install -y make
-        have git  || sudo apt-get install -y git
+      if is_steamos; then
+        steamos_base
+      else
+        deb_base
       fi
       ;;
     *) echo "❌ Unsupported OS: $OS"; exit 1 ;;
   esac
 }
 
-# 2. Default shell -> zsh (skip if already).
+deb_base() {
+  if ! have zsh || ! have curl || ! have make || ! have git || ! have tmux; then
+    sudo apt-get update
+    have zsh  || sudo apt-get install -y zsh
+    have curl || sudo apt-get install -y curl ca-certificates
+    have make || sudo apt-get install -y make
+    have git  || sudo apt-get install -y git
+    have tmux || sudo apt-get install -y tmux
+  fi
+}
+
+steamos_base() {
+  local need=()
+  have zsh  || need+=(zsh)
+  have tmux || need+=(tmux)
+  have git  || need+=(git)
+  have make || need+=(make)
+  have curl || need+=(curl)
+  [[ ${#need[@]} -eq 0 ]] && { echo "✅ SteamOS base: all present"; return; }
+  echo "📦 SteamOS: disabling read-only root + installing: ${need[*]}"
+  sudo steamos-readonly disable
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinux
+  sudo pacman -Sy --noconfirm archlinux-keyring || true
+  sudo pacman -S --noconfirm --needed "${need[@]}"
+}
+
+# 2. Default shell -> zsh.
+#    SteamOS: do NOT chsh to /usr/bin/zsh (wiped on update -> broken login).
+#    Launch zsh from ~/.bashrc instead; falls back to bash if zsh is missing.
 set_default_shell() {
   local zsh_bin
   zsh_bin="$(command -v zsh || true)"
-  [[ -z "$zsh_bin" ]] && { echo "⚠️  zsh not found, skipping chsh"; return; }
+  [[ -z "$zsh_bin" ]] && { echo "⚠️  zsh not found, skipping"; return; }
   if [[ "$SHELL" == */zsh ]]; then
     echo "✅ default shell already zsh"
+    return
+  fi
+  if is_steamos; then
+    local line='[ -z "$ZSH_VERSION" ] && command -v zsh >/dev/null 2>&1 && exec zsh'
+    touch "$HOME/.bashrc"
+    grep -qF "$line" "$HOME/.bashrc" || printf '\n%s\n' "$line" >> "$HOME/.bashrc"
+    echo "✅ SteamOS: 'exec zsh' injected into ~/.bashrc (safe across updates)"
   else
     echo "🐚 Setting default shell to $zsh_bin (password may be required)..."
     chsh -s "$zsh_bin"
   fi
 }
 
-# 3. Dev tools: zoxide, starship, tmux, mise.
+# 3. Dev tools: zoxide, starship, mise (user-space, survive SteamOS updates).
 install_tools() {
   bash "$DOTFILES_DIR/shell/inc/install-tools.sh"
 }

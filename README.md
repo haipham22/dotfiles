@@ -138,6 +138,26 @@ cd system/mac
 brew bundle
 ```
 
+## Steam Deck (SteamOS)
+
+SteamOS is Arch-based with a read-only root. `setup.sh` auto-detects it:
+disables read-only mode, inits the pacman keyring, and installs zsh/tmux/etc.
+via pacman. Dev tools (zoxide/starship/mise) install user-space and persist.
+
+```bash
+cd ~/Workspaces/dotfiles && bash setup.sh
+```
+
+Caveats:
+- **`/usr` is wiped on every SteamOS update.** After each update, re-run:
+  ```bash
+  bash setup.sh base chsh
+  ```
+  (zsh/tmux are gone until you do; login still works via the bash fallback).
+- zsh is **not** set via `chsh` on SteamOS (a wiped `/usr/bin/zsh` would break
+  login). Instead `setup.sh` injects `exec zsh` into `~/.bashrc`, which degrades
+  safely to bash if zsh is missing.
+
 ## Maintenance
 
 ### Update zimfw modules
