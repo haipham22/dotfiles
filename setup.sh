@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # One-shot bootstrap. No make required (Ubuntu minimal ships without it).
-#   bash setup.sh   # or: ./setup.sh
-#
-# Installs zsh + dev tools, sets zsh as default shell, symlinks configs,
-# injects shell sources (~/.zshrc, ~/.zprofile), inits git submodules.
+#   bash setup.sh                 # everything (or: ./setup.sh)
+#   bash setup.sh tools           # one phase, e.g. only install dev tools
+#   bash setup.sh base chsh inject  # ...or combine phases
+# Phases: base chsh tools link inject submodules
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -71,12 +71,30 @@ init_submodules() {
   git -C "$DOTFILES_DIR" submodule update --recursive --init
 }
 
-ensure_base
-set_default_shell
-install_tools
-link_configs
-inject_shell
-init_submodules
+# Subcommands (run individually): base chsh tools link inject submodules
+# No args -> run all in order.
+dispatch() {
+  case "$1" in
+    base)       ensure_base ;;
+    chsh)       set_default_shell ;;
+    tools)      install_tools ;;
+    link)       link_configs ;;
+    inject)     inject_shell ;;
+    submodules) init_submodules ;;
+    *) echo "❌ unknown phase: $1"; echo "usage: $0 [base chsh tools link inject submodules]..."; exit 1 ;;
+  esac
+}
+
+if [[ $# -eq 0 ]]; then
+  ensure_base
+  set_default_shell
+  install_tools
+  link_configs
+  inject_shell
+  init_submodules
+else
+  for phase in "$@"; do dispatch "$phase"; done
+fi
 
 echo
 echo "✅ Done. Restart your shell: exec zsh"
