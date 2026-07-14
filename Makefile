@@ -1,19 +1,6 @@
-init-git:
-	git submodule update --recursive --init
-
+# Primary entry is setup.sh (works without make). `make init` wraps it for convenience.
 init:
-	make init-zsh init-zim init-gitignore init-tmux
-
-
-init-zsh:
-	echo "source $$(pwd)/shell/zsh.sh" >> ~/.zshrc
-
-init-zim:
-	echo "source $$(pwd)/shell/zim.sh" >> ~/.zshrc
-
-init-gitignore:
-	git config --global core.excludesfile "$$(pwd)/git/.gitignore"
-
+	@bash "$(CURDIR)/setup.sh"
 
 fix-zim:
 	@echo "🔧 Fixing zimfw completion issues..."
@@ -22,6 +9,3 @@ fix-zim:
 		zimfw install; \
 	fi
 	@echo "✅ Done. Run 'exec zsh' to restart shell"
-
-init-tmux:
-	ln -s "$$(pwd)/tmux.conf" ~/.tmux.conf

@@ -6,9 +6,10 @@ Personal configuration files for zsh, git, and development tools.
 
 - **Zsh** (default shell on macOS)
 - **[zimfw](https://github.com/zimfw/zimfw)** plugin manager
-- **[Starship](https://starship.rs/)** prompt
-- **[zoxide](https://github.com/ajeetdsouza/zoxide)** smarter cd command
-- **[mise](https://mise.jdx.dev/)** version manager (optional)
+- **[Starship](https://starship.rs/)** prompt — auto-installed by `make init`
+- **[zoxide](https://github.com/ajeetdsouza/zoxide)** smarter cd command — auto-installed by `make init`
+- **[tmux](https://github.com/tmux/tmux)** terminal multiplexer — auto-installed by `make init`
+- **[mise](https://mise.jdx.dev/)** version manager — auto-installed by `make init`
 - **[bun](https://bun.sh/)** JavaScript runtime (optional)
 
 ## Quick Start
@@ -18,8 +19,8 @@ Personal configuration files for zsh, git, and development tools.
 git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/Workspaces/dotfiles
 cd ~/Workspaces/dotfiles
 
-# Initialize everything (zsh, gitignore, fix completion issues)
-make init
+# Initialize everything (installs zsh + tools, sets default shell, links configs)
+bash setup.sh      # or: make init (if you already have make)
 
 # Restart your shell
 exec zsh
