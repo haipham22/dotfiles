@@ -2,10 +2,26 @@
   process-unmapped-keys no
 )
 
+;; macOS-style: giữ Super (phím Win) = Cmd → gửi Ctrl
+;;   Super+C/V/X/Z = copy/paste/cut/undo, Super+T/L/F/S/W/D...
+;;   Super+Space   = GNOME Overview (như Spotlight)
+;;   Super+mũi tên = Home/End/PageUp/PageDown
+;; Alt và mọi phím khác giữ nguyên.
+
 (defsrc
-  lmet lalt
+  lmet grv tab q w a b c d e f g h i j k l
+  n o p r s t u v x y z spc left up down right
 )
 
-(deflayer macos-style
-  lalt lmet
+(deflayer base
+  (layer-while-held cmd)
+  grv tab q w a b c d e f g h i j k l
+  n o p r s t u v x y z spc left up down right
+)
+
+(deflayer cmd
+  XX
+  grv tab q w C-a C-b C-c C-d C-e C-f C-g C-h C-i C-j C-k C-l
+  C-n C-o C-p C-r C-s C-t C-u C-v C-x C-y C-z (multi lmet spc)
+  home pgup pgdn end
 )
