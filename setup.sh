@@ -122,6 +122,8 @@ install_kanata() {
   sudo ln -sfn "$kdir/kanata.service" /etc/systemd/system/kanata.service
   sudo systemctl daemon-reload
   sudo systemctl enable --now kanata
+  # GNOME: Super+Space = Overview (kanata gửi Super+Space từ layer cmd)
+  command -v gsettings >/dev/null && gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>space']" || true
 }
 
 # 7. Git submodules.
