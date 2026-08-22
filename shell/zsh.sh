@@ -10,6 +10,7 @@ eval "$(zoxide init zsh)"
 
 source "$DOTFILES_DIR/shell/inc/alias.sh"
 source "$DOTFILES_DIR/shell/inc/functions.sh"
+source "$DOTFILES_DIR/shell/inc/keybindings.sh"
 
 if [[ "$(uname)" == 'Linux' ]]; then
     source "$DOTFILES_DIR/shell/inc/functions-linux.sh"
