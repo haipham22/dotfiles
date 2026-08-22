@@ -26,6 +26,4 @@ dist/
 *.d.ts
 *.d.ts.map
 
-.claude/session-state/
-
 **/.claude/settings.local.json
