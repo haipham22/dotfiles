@@ -36,6 +36,7 @@ alias cccm="claude --dangerously-skip-permissions --teammate-mode=tmux"
 
 # dotfiles maintenance
 alias fix-zim="fix_zim_completion"
+alias macclean="$DOTFILES_DIR/system/mac/cleanup.sh"
 
 # clipboard
 alias "c=xclip"
