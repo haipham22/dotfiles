@@ -32,6 +32,7 @@ alias dcpdv="docker compose down -v"
 
 # claude
 alias ccc="claude --dangerously-skip-permissions"
+alias cccad="claude --model sonnet --advisor opus --dangerously-skip-permissions"
 alias cccm="claude --dangerously-skip-permissions --teammate-mode=tmux"
 
 # dotfiles maintenance
