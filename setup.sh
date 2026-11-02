@@ -89,6 +89,7 @@ install_tools() {
 # 4. Symlinks + git global ignores.
 link_configs() {
   ln -sfn "$DOTFILES_DIR/tmux.conf" "$HOME/.tmux.conf"
+  mkdir -p "$HOME/.config/zsh" && ln -sfn "$DOTFILES_DIR/shell/framework/zimrc" "$HOME/.config/zsh/zimrc"
   git config --global core.excludesfile "$DOTFILES_DIR/git/.gitignore"
 }
 
