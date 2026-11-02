@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # macOS cache cleaner — interactive menu by default, --all skips the menu.
-# Usage: cleanup.sh [--dry-run] [--deep] [--all]
+# Usage: cleanup.sh [--dry-run] [--deep] [--all] [--zalo]
 #   --dry-run  preview every category, delete nothing
 #   --deep     add browser caches (only when browser closed) + docker image prune -a
 #   --all      run every category without the menu
+#   --zalo     add Zalo cache/media category to the menu (media asks confirm)
 # Docker prunes always ask for confirmation (default No).
-# Never touches: ZaloData, browser profile data, ~/.gradle, ~/Downloads.
+# Only touches ZaloData with --zalo (media re-downloads on view in Zalo).
+# Never touches: browser profile data, ~/.gradle, ~/Downloads.
 set -u
 
 DRY_RUN=0
 DEEP=0
 ALL=0
+ZALO=0
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
     --deep)    DEEP=1 ;;
     --all|-y)  ALL=1 ;;
-    *) echo "unknown arg: $arg (use --dry-run, --deep, --all)"; exit 1 ;;
+    --zalo)    ZALO=1 ;;
+    *) echo "unknown arg: $arg (use --dry-run, --deep, --all, --zalo)"; exit 1 ;;
   esac
 done
 
@@ -90,17 +94,22 @@ docker_prune() {
   log_row "${reclaimed:--}" "docker $*"
 }
 
-# ask before docker prunes; default No; non-TTY = skip
-confirm_docker() {
-  [ "$DRY_RUN" -eq 1 ] && return 0
+# shared prompt for opt-in destructive steps (docker prunes, Zalo media)
+confirm_yn() {
+  local msg="$1"
+  if [ "$DRY_RUN" -eq 1 ]; then return 0; fi
   if [ ! -t 0 ]; then
-    echo "  [skip] no TTY — docker prunes need interactive confirmation"
+    echo "  [skip] no TTY — needs interactive confirmation"
     return 1
   fi
   local ans
-  printf "  docker prunes (listed above) — run them? [y/N] "
+  printf "  %s [y/N] " "$msg"
   read -r ans
   [ "$ans" = "y" ] || [ "$ans" = "Y" ]
+}
+
+confirm_docker() {
+  confirm_yn "docker prunes (listed above) — run them?"
 }
 
 # versioned product caches: keep newest version dir, delete older ones
@@ -197,7 +206,7 @@ run_pkg() {
   run_cmd pip3 cache purge && log_row "-" "pip cache purge"
   run_cmd yarn cache clean && log_row "-" "yarn cache clean"
   clean_path "$HOME/Library/Caches/node-gyp" "~/Library/Caches/node-gyp"
-  run_cmd brew cleanup -s && log_row "-" "brew cleanup -s"
+  run_cmd brew cleanup --prune=all -s && log_row "-" "brew cleanup --prune=all -s"
   run_cmd go clean -modcache && log_row "-" "go modcache"
   run_cmd go clean -cache && log_row "-" "go build cache"
 }
@@ -231,23 +240,54 @@ run_browser() {
   if [ "$DEEP" -eq 1 ]; then
     clean_browser_cache "Google Chrome" "$HOME/Library/Caches/Google/Chrome"
     clean_browser_cache "Microsoft Edge" "$HOME/Library/Caches/Microsoft Edge"
+    if ! pgrep -xq "Google Chrome"; then
+      clean_path "$HOME/Library/Application Support/Google/Chrome/OptGuideOnDeviceModel" \
+        "Chrome on-device AI model (re-downloads unless disabled in chrome://flags)"
+    fi
   else
     echo "  [skip] needs --deep"
   fi
 }
 
+run_xcode() {
+  echo "xcode:"
+  run_cmd xcrun simctl delete unavailable && log_row "-" "simulators (unavailable runtimes)"
+  clean_path "$HOME/Library/Developer/CoreSimulator/Caches" "CoreSimulator caches"
+}
+
+run_zalo() {
+  echo "zalo:"
+  if pgrep -xq Zalo; then
+    echo "  [skip] Zalo is running"
+    return 0
+  fi
+  local base="$HOME/Library/Application Support/ZaloData"
+  clean_path "$base/Cache" "Zalo cache"
+  clean_path "$base/logs" "Zalo logs"
+  if [ -d "$base/media" ]; then
+    if confirm_yn "delete Zalo media ($(size_of "$base/media"))? chats re-download media on view; Database untouched"; then
+      clean_path "$base/media" "Zalo media"
+    else
+      echo "  [skip] Zalo media kept"
+    fi
+  fi
+}
+
 # ---- menu ----
 
-MENU_ORDER="pkg apps ide playwright browser docker"
+MENU_ORDER="pkg apps ide xcode playwright browser docker"
+[ "$ZALO" -eq 1 ] && MENU_ORDER="$MENU_ORDER zalo"
 
 menu_desc() {
   case "$1" in
     pkg)       echo "npm, pnpm, pip, yarn, brew, go caches" ;;
     apps)      echo "ShipIt, Sparkle updates, Codex, stremio" ;;
     ide)       echo "old JetBrains + AndroidStudio (caches + settings)" ;;
+    xcode)     echo "simulators for unavailable runtimes" ;;
     playwright) echo "old browser builds, keeps newest" ;;
-    browser)   echo "Chrome/Edge cache, needs --deep + browser closed" ;;
+    browser)   echo "Chrome/Edge cache + Chrome AI model, needs --deep" ;;
     docker)    echo "builder/system prune, asks confirm; -a needs --deep" ;;
+    zalo)      echo "Zalo cache/logs + media (asks confirm), needs --zalo" ;;
   esac
 }
 
@@ -260,9 +300,11 @@ menu_size() {
                 kb=$(old_versions_kb "$HOME/Library/Application Support/Google" "AndroidStudio*"); t=$((t + kb))
                 kb=$(old_versions_kb "$HOME/Library/Caches/Google" "AndroidStudio*"); t=$((t + kb))
                 echo "$(human_mb $((t / 1024)))" ;;
+    xcode)      sum_size "$HOME/Library/Developer/CoreSimulator" ;;
     playwright) sum_size "$HOME/Library/Caches/ms-playwright" ;;
-    browser)    sum_size "$HOME/Library/Caches/Google/Chrome" "$HOME/Library/Caches/Microsoft Edge" ;;
+    browser)    sum_size "$HOME/Library/Caches/Google/Chrome" "$HOME/Library/Caches/Microsoft Edge" "$HOME/Library/Application Support/Google/Chrome/OptGuideOnDeviceModel" ;;
     docker)     echo "-" ;;
+    zalo)       sum_size "$HOME/Library/Application Support/ZaloData/Cache" "$HOME/Library/Application Support/ZaloData/logs" "$HOME/Library/Application Support/ZaloData/media" ;;
   esac
 }
 
@@ -328,9 +370,11 @@ for name in $SELECTED; do
     pkg)       run_pkg ;;
     apps)      run_apps ;;
     ide)       run_ide ;;
+    xcode)     run_xcode ;;
     playwright) run_playwright ;;
     browser)   run_browser ;;
     docker)    run_docker ;;
+    zalo)      run_zalo ;;
   esac
 done
 
