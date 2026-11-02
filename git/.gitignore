@@ -27,3 +27,6 @@ dist/
 *.d.ts.map
 
 **/.claude/settings.local.json
+
+# Ignore Playwright MCP artifacts (screenshots, traces)
+.playwright-mcp/
