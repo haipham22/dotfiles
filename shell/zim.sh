@@ -3,6 +3,9 @@
 ZIM_HOME=~/.zim
 ZIM_CONFIG_FILE=~/.config/zsh/zimrc
 
+# Re-sourcing runs the completion module's compinit wrapper twice -> warning noise
+[[ -n ${_ZIM_INITIALIZED} ]] && return
+
 # Download zimfw plugin manager if missing.
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
   curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
@@ -22,6 +25,17 @@ unset _comps 2>/dev/null
 
 # Initialize modules.
 source ${ZIM_HOME}/init.zsh
+_ZIM_INITIALIZED=1
+
+# zim's input module bakes ${widgets[zle-line-init]#user:} into the
+# _start_application_mode body. In Orca-spawned terminals that captured name is
+# Orca's transient wrapper fn, which Orca unfunctions at the first prompt ->
+# "zsh: command not found" spam on every prompt afterwards. The captured fn's
+# work is already done by then, so keep only the smkx call. In plain terminals
+# the captured name is empty, so this is a no-op there.
+if (( ${+functions[_start_application_mode]} )); then
+  functions[_start_application_mode]=$'echoti smkx'
+fi
 
 # zmodule sindresorhus/pure --source async.zsh
 # zmodule romkatv/powerlevel10k --use degit
