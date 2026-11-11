@@ -12,6 +12,7 @@ alias cls="clear"
 alias gad="git add"
 alias gpl="git pull"
 alias gplb="git pull --rebase"
+alias gpla="git pull --autostash"
 alias gf="git diff"
 alias gst="git status"
 alias gcm="git commit"
@@ -20,6 +21,7 @@ alias gco="git checkout"
 alias gcob="git checkout -b"
 alias gph="git push"
 alias gcl="git clone"
+alias grsh="git reset --hard"
 
 
 # docker compose alias
