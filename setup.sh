@@ -3,7 +3,7 @@
 #   bash setup.sh                 # everything (or: ./setup.sh)
 #   bash setup.sh tools           # one phase, e.g. only install dev tools
 #   bash setup.sh base chsh inject  # ...or combine phases
-# Phases: base chsh tools link inject kanata submodules
+# Phases: base chsh tools link inject kanata easyeffects submodules
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -90,6 +90,8 @@ install_tools() {
 link_configs() {
   ln -sfn "$DOTFILES_DIR/tmux.conf" "$HOME/.tmux.conf"
   mkdir -p "$HOME/.config/zsh" && ln -sfn "$DOTFILES_DIR/shell/framework/zimrc" "$HOME/.config/zsh/zimrc"
+  mkdir -p "$HOME/.local/bin"
+  ln -sfn "$DOTFILES_DIR/system/linux/fix-touchpad" "$HOME/.local/bin/fix-touchpad"
   git config --global core.excludesfile "$DOTFILES_DIR/git/.gitignore"
 }
 
@@ -125,9 +127,46 @@ install_kanata() {
   sudo systemctl enable --now kanata
   # GNOME: Super+Space = Overview (kanata gửi Super+Space từ layer cmd)
   command -v gsettings >/dev/null && gsettings set org.gnome.shell.keybindings toggle-overview "['<Super>space']" || true
+  # Clipboard Indicator: Super+C (kanata gửi Super+C thật từ phím ` trong layer cmd)
+  local cischema="$HOME/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com/schemas"
+  [ -d "$cischema" ] && GSETTINGS_SCHEMA_DIR="$cischema" gsettings set org.gnome.shell.extensions.clipboard-indicator toggle-menu "['<Super>c']" || true
 }
 
-# 7. Git submodules.
+# 7. EasyEffects EQ (Linux only): bù tông màu cho DAC USB rẻ tiền (hub tai nghe).
+#    Cài app, đặt preset EQ + autoload-fallback cho mọi output device, autostart service mode.
+install_easyeffects() {
+  [[ "$OS" == "Linux" ]] || { echo "⏭ easyeffects: Linux only, skipping"; return 0; }
+  have easyeffects || sudo apt-get install -y easyeffects
+
+  # Preset EQ (V-shape: boost bass + treble cho DAC lẹt).
+  mkdir -p "$HOME/.local/share/easyeffects/output"
+  cp -f "$DOTFILES_DIR/system/linux/easyeffects/output/usb-hub-vshape.json" \
+        "$HOME/.local/share/easyeffects/output/usb-hub-vshape.json"
+
+  # Settings EE (QSettings ini): fallback autoload preset cho mọi output device + autostart.
+  local db="$HOME/.config/easyeffects/db/easyeffectsrc" s
+  mkdir -p "$(dirname "$db")" && touch "$db"
+  for s in \
+    "lastLoadedOutputPreset=usb-hub-vshape" \
+    "outputAutoloadingUsesFallback=true" \
+    "outputAutoloadingFallbackPreset=usb-hub-vshape" \
+    "processAllOutputs=true" \
+    "autostartOnLogin=true"
+  do
+    local key="${s%%=*}"
+    grep -qs "^${key}=" "$db" || sed -i "1i ${s}" "$db"
+  done
+
+  # Autostart service mode (không mở cửa sổ khi login).
+  mkdir -p "$HOME/.config/autostart"
+  if [[ -r /usr/share/applications/com.github.wwmm.easyeffects.desktop && ! -e "$HOME/.config/autostart/com.github.wwmm.easyeffects.desktop" ]]; then
+    sed 's/^Exec=easyeffects$/Exec=easyeffects -l usb-hub-vshape/' \
+      /usr/share/applications/com.github.wwmm.easyeffects.desktop \
+      > "$HOME/.config/autostart/com.github.wwmm.easyeffects.desktop"
+  fi
+}
+
+# 8. Git submodules.
 init_submodules() {
   git -C "$DOTFILES_DIR" submodule update --recursive --init
 }
@@ -142,8 +181,9 @@ dispatch() {
     link)       link_configs ;;
     inject)     inject_shell ;;
     kanata)     install_kanata ;;
+    easyeffects) install_easyeffects ;;
     submodules) init_submodules ;;
-    *) echo "❌ unknown phase: $1"; echo "usage: $0 [base chsh tools link inject kanata submodules]..."; exit 1 ;;
+    *) echo "❌ unknown phase: $1"; echo "usage: $0 [base chsh tools link inject kanata easyeffects submodules]..."; exit 1 ;;
   esac
 }
 
@@ -154,6 +194,7 @@ if [[ $# -eq 0 ]]; then
   link_configs
   inject_shell
   install_kanata
+  install_easyeffects
   init_submodules
 else
   for phase in "$@"; do dispatch "$phase"; done
